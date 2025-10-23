@@ -10,13 +10,10 @@ class StaticController extends Controller
     //
     public function index()
     {
-        return view('welcome');
+        return view('layout');
     }
     //
-    public function about($categories = null, $item = null)
-    {
-        return '<h1>' . $categories . '</h1>';
-    }
+    
     //
     public function services()
     {
@@ -28,14 +25,8 @@ class StaticController extends Controller
         return view('contact');
     }
     //
-    public function portfolio()
+    public function about()
     {
-        $filetr = request('color');
-        if (isset($filetr)) {
-            # code...
-            return 'About Page color ' . strip_tags($filetr) . ' .';
-        } else {
-            return 'About Page color .';
-        }
+        return view('about');
     }
 }
