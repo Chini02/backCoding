@@ -6,13 +6,24 @@ use Illuminate\Http\Request;
 
 class ComputerController extends Controller
 {
+
+
+    private static function getData() {
+        return [
+            ['id'=>1,'origin'=>'USA','name'=>'Dell'],
+            ['id'=>2,'origin'=>'KOREA','name'=>'LG'],
+            ['id'=>3,'origin'=>'Chaina','name'=>'Tahsiom'],
+            ['id'=>4,'origin'=>'USA','name'=>'HP'],
+            ['id'=>5,'origin'=>'France','name'=>'Lenovo']
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         //
-        return view('computers.index');
+        return view('computers.index',['computers'=>self::getData()]);
     }
 
     /**
@@ -34,9 +45,16 @@ class ComputerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $computers = self::getData();
+        $index = array_search($id, array_column($computers,'id'));
+
+        if ($index === false) {
+            abort(404);
+        }
+
+        return view('computers.show',['computers'=>$computers[$index]]);
     }
 
     /**
