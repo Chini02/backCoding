@@ -9,15 +9,15 @@ class ComputerController extends Controller
 {
 
 
-    private static function getData() {
-        return [
-            ['id'=>1,'origin'=>'USA','name'=>'Dell'],
-            ['id'=>2,'origin'=>'KOREA','name'=>'LG'],
-            ['id'=>3,'origin'=>'Chaina','name'=>'Tahsiom'],
-            ['id'=>4,'origin'=>'USA','name'=>'HP'],
-            ['id'=>5,'origin'=>'France','name'=>'Lenovo']
-        ];
-    }
+    // private static function getData() {
+    //     return [
+    //         ['id'=>1,'origin'=>'USA','name'=>'Dell'],
+    //         ['id'=>2,'origin'=>'KOREA','name'=>'LG'],
+    //         ['id'=>3,'origin'=>'Chaina','name'=>'Tahsiom'],
+    //         ['id'=>4,'origin'=>'USA','name'=>'HP'],
+    //         ['id'=>5,'origin'=>'France','name'=>'Lenovo']
+    //     ];
+    // }
     /**
      * Display a listing of the resource.
      */
@@ -40,14 +40,25 @@ class ComputerController extends Controller
      */
     public function store(Request $request)
     {
-        $computer = new Computer();
-        $computer->name = $request->input('name');
-        $computer->origin = $request->input('origin');
-        $computer->price = $request->input('price');
-        $computer->date_release = $request->input('date_release');
+        $request->validate([
+            'name' => 'required',
+            'origin' => 'required',
+            'price' => ['required','integer'],
+            'date_release' => ['required','date'],
+        ]);
 
+
+        $computer = new Computer();
+
+        $computer->name = strip_tags($request->input('name'));
+        $computer->origin = strip_tags($request->input('origin'));
+        $computer->price = strip_tags($request->input('price'));
+        $computer->date_release = strip_tags($request->input('date_release'));
+
+        // Save to database
         $computer->save();
-        return redirect()->route('computers.index');
+
+        return redirect()->route('computers.index')->with('success', 'Computer updated successfully!');
     }
 
     /**
@@ -55,14 +66,8 @@ class ComputerController extends Controller
      */
     public function show($id)
     {
-        
-        $index = Computer::find($id);
 
-        if ($index === false) {
-            abort(404);
-        }
-
-        return view('computers.show',['computers'=>$index]);
+        return view('computers.show',['computers'=>Computer::findorfail($id)]);
     }
 
     /**
@@ -70,7 +75,10 @@ class ComputerController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // Find the computer by ID (or show 404 if not found)
+        $computer = Computer::findOrFail($id);
+
+        return view('computers.edite',['computer'=>$computer]);
     }
 
     /**
@@ -78,7 +86,25 @@ class ComputerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'origin' => 'required',
+            'price' => ['required','integer'],
+            'date_release' => ['required','date'],
+        ]);
+
+        // Find the computer by ID (or show 404 if not found)
+        $computer = Computer::findOrFail($id);
+
+        $computer->name = strip_tags($request->input('name'));
+        $computer->origin = strip_tags($request->input('origin'));
+        $computer->price = strip_tags($request->input('price'));
+        $computer->date_release = strip_tags($request->input('date_release'));
+
+        // Save to database
+        $computer->save();
+
+        return redirect()->route('computers.index')->with('success', 'Computer updated successfully!');
     }
 
     /**
@@ -86,6 +112,10 @@ class ComputerController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $computer = Computer::findOrFail($id);
+
+        $computer->delete();
+
+        return redirect()->route('computers.index')->with('success', 'Computer Deleted successfully!');
     }
 }
