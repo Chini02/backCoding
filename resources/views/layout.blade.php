@@ -23,7 +23,6 @@
 
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('home.index') }}">LOGOO</a>
            
             <div class="collapse navbar-collapse d-flex" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 p-2">
@@ -54,7 +53,7 @@
             </div>
         </div>
     </nav>
-    <header class="container-fluid bg-1 text-center">
+    <header class="container-fluid">
         @yield('content')
     </header>
     
@@ -66,6 +65,7 @@
     </script>
 
 <script src="{{ url('js/app.js') }}"></script>
+    
 </body>
 
 </html>

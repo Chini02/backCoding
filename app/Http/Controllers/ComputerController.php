@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Computer;
 use Illuminate\Http\Request;
 
 class ComputerController extends Controller
@@ -23,7 +24,7 @@ class ComputerController extends Controller
     public function index()
     {
         //
-        return view('computers.index',['computers'=>self::getData()]);
+        return view('computers.index',['computers'=>Computer::all()]);
     }
 
     /**
@@ -31,7 +32,7 @@ class ComputerController extends Controller
      */
     public function create()
     {
-        //
+        return view('computers.create');
     }
 
     /**
@@ -39,7 +40,14 @@ class ComputerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $computer = new Computer();
+        $computer->name = $request->input('name');
+        $computer->origin = $request->input('origin');
+        $computer->price = $request->input('price');
+        $computer->date_release = $request->input('date_release');
+
+        $computer->save();
+        return redirect()->route('computers.index');
     }
 
     /**
@@ -47,14 +55,14 @@ class ComputerController extends Controller
      */
     public function show($id)
     {
-        $computers = self::getData();
-        $index = array_search($id, array_column($computers,'id'));
+        
+        $index = Computer::find($id);
 
         if ($index === false) {
             abort(404);
         }
 
-        return view('computers.show',['computers'=>$computers[$index]]);
+        return view('computers.show',['computers'=>$index]);
     }
 
     /**
